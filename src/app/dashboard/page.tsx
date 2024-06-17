@@ -28,7 +28,6 @@ const Page = () => {
             />
           </div>
         </div>
-        Page
       </div>
     </>
   );
