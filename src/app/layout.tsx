@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import { AuthContextProvider } from "@/context/AuthContext";
+import { Toaster, resolveValue } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,12 +20,36 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex flex-col gap-2  ">
-          <Navbar />
-          <div className="w-full max-w-[112rem] mx-auto  pt-[5rem]">
-            {children}
+        <AuthContextProvider>
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              success: {
+                className: "toast-success",
+                duration: 3000,
+                style: {
+                  backgroundColor: "#344054",
+                  color: "white",
+                },
+              },
+              error: {
+                className: "toast-error",
+                duration: 3000,
+                style: {
+                  backgroundColor: "red",
+                  color: "white",
+                  minWidth: "max-content",
+                },
+              },
+            }}
+          />
+          <div className="flex flex-col gap-2">
+            <Navbar />
+            <div className="w-full max-w-[112rem] mx-auto pt-[5rem]">
+              {children}
+            </div>
           </div>
-        </div>
+        </AuthContextProvider>
       </body>
     </html>
   );
