@@ -1,6 +1,6 @@
 "use client";
 
-import useOnClickOutside from "@/hooks/hooks/useOnClickOutside";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
 import { Inter } from "next/font/google";
 import React, { useMemo, useRef } from "react";
 import { document } from "./DocumentsSection";

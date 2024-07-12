@@ -23,7 +23,11 @@ input[type="checkbox"]:checked {
 
 .content {
   background-color: white;
-  padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#dropzone.dragging {
+  border-style: dashed;
+  border-color: #d1d5db;
 }

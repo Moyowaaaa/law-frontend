@@ -23,7 +23,6 @@ export default function Home() {
   console.log({ currentUser });
   const onSignInUser = async () => {
     try {
-      const usersCollection = collection(db, "users");
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 

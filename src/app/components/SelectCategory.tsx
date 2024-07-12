@@ -57,6 +57,7 @@ const SelectCategory = ({
       } else {
         setCategory(category);
         setNewCategory(category);
+        setShowOptions(false);
       }
     } catch (error) {
       console.log(error);
@@ -65,7 +66,7 @@ const SelectCategory = ({
 
   return (
     <>
-      <div className="flex flex-col gap-2 w-[18rem]">
+      <div className="flex flex-col gap-2 w-full">
         <p>Category</p>
         <div className=" flex w-full border-2 border-[#EAECF0] items-center rounded-lg gap-4 pl-4 py-2 bg-[transparent]">
           <input
@@ -94,7 +95,7 @@ const SelectCategory = ({
               </div>
             ) : (
               <button
-                className="px-2 py-4 w-full"
+                className="px-2 py-4 w-full hover:bg-[#344054] hover:text-[white] rounded-md w-full text-left"
                 onClick={() => onSelectCategory(newCategory)}
               >
                 <p>{newCategory}</p>
