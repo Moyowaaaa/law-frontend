@@ -3,9 +3,7 @@ import downArrow from "../../../public/images/downArrow.svg";
 import upArrow from "../../../public/images/upArrow.svg";
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import { categories } from "../categories/page";
 
-const interSemi = Inter({ subsets: ["latin"], weight: "500" });
 const FiltersSection = () => {
   return (
     <>
@@ -15,11 +13,11 @@ const FiltersSection = () => {
         </div>
 
         <div className="flex gap-2 items-center justify-between">
-          <p className={`${interSemi.className} text-[#101828]`}>Categories</p>
+          <p className={` text-[#101828]`}>Categories</p>
           <Image src={upArrow} alt="" />
         </div>
 
-        {categories?.map((c, index) => (
+        {/* {categories?.map((c, index) => (
           <div className="flex items-center gap-4" key={index}>
             <input
               type="checkbox"
@@ -27,17 +25,15 @@ const FiltersSection = () => {
             />
             <p>{c.title}</p>
           </div>
-        ))}
+        ))} */}
 
         <div className="flex gap-2 items-center justify-between">
-          <p className={`${interSemi.className} text-[#101828]`}>States</p>
+          <p className={` text-[#101828]`}>States</p>
           <Image src={downArrow} alt="" />
         </div>
 
         <div className="flex gap-2 items-center justify-between">
-          <p className={`${interSemi.className} text-[#101828]`}>
-            Another Category
-          </p>
+          <p className={` text-[#101828]`}>Another Category</p>
           <Image src={downArrow} alt="" />
         </div>
       </div>

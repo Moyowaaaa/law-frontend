@@ -28,8 +28,6 @@ import SelectCategory from "../components/SelectCategory";
 import toast from "react-hot-toast";
 import UploadModal from "../components/UploadModal";
 
-const inter = Inter({ subsets: ["latin"], weight: "800" });
-
 const Admin = () => {
   const openFileUploader = () => {
     document.getElementById(`doc-uploader`)?.click();
@@ -66,9 +64,7 @@ const Admin = () => {
 
       {!adminLoggedIn ? (
         <div className="px-4 lg:px-20  flex flex-col gap-10 items-center justify-center h-screen absolute top-0 left-0 w-full">
-          <h1 className={`text-[#344054] text-[2rem] ${inter.className}`}>
-            Admin Login
-          </h1>
+          <h1 className={`text-[#344054] text-[2rem] `}>Admin Login</h1>
 
           <div className="flex flex-col gap-2 w-[18rem]">
             <p>Email</p>
@@ -110,9 +106,7 @@ const Admin = () => {
         </div>
       ) : (
         <div className="px-4 lg:px-20  flex flex-col gap-10 w-9/12">
-          <h1 className={`text-[#344054] text-[2rem] ${inter.className}`}>
-            Admin
-          </h1>
+          <h1 className={`text-[#344054] text-[2rem] `}>Admin</h1>
 
           <div className="flex flex-col gap-2">
             <div className="flex w-full  items-center justify-between">

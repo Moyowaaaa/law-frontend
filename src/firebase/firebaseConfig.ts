@@ -4,17 +4,14 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
+// Your web app's Firebase configuration using environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyBI4hRTbUjIDeGxm3pPrH3VK50faFlA530",
-  authDomain: "law-frontend.firebaseapp.com",
-  projectId: "law-frontend",
-  storageBucket: "law-frontend.appspot.com",
-  messagingSenderId: "828865014667",
-  appId: "1:828865014667:web:6d9ee33ecc96c16c465d8e",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase

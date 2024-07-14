@@ -7,9 +7,7 @@ import CategoryCard from "../components/CategoryCard";
 import { collection, onSnapshot, orderBy } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 import SelectCategory from "../components/SelectCategory";
-
-const inter = Inter({ subsets: ["latin"], weight: "800" });
-const interLight = Inter({ subsets: ["latin"], weight: "300" });
+import Loader from "../components/Loader";
 
 // export const categories: category[] = [
 //   { title: "Charge and bail", documentCount: 90 },
@@ -23,8 +21,10 @@ const interLight = Inter({ subsets: ["latin"], weight: "300" });
 
 const Page = () => {
   const [categories, setCategories] = useState<category[]>([]);
-
+  const [searchedCategory, setSearchedCategory] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   useEffect(() => {
+    setIsLoading(true);
     const collectionRef = collection(db, "categories");
     orderBy("createdAt");
     onSnapshot(collectionRef, (snapshot) => {
@@ -33,26 +33,52 @@ const Page = () => {
         categories.push({ ...doc.data(), id: doc.id });
       });
       setCategories(categories as category[]);
+      setIsLoading(false);
     });
   }, []);
 
   return (
     <>
       <div className="px-4 lg:px-20  flex flex-col gap-6">
-        <h1 className={`text-[#344054] text-[2rem] ${inter.className}`}>
-          Available Categories
-        </h1>
-        <p className={`text-[#667085] text-[1rem] ${interLight.className}`}>
+        <h1 className={`text-[#344054] text-[2rem] `}>Available Categories</h1>
+        <p className={`text-[#667085] text-[1rem] `}>
           Search from categories available
         </p>
 
-        <SelectCategory />
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <>
+            <div className=" flex w-[25rem] border-2 border-[#EAECF0] items-center rounded-lg gap-4 pl-4 py-2 bg-[transparent]">
+              <input
+                type="text"
+                placeholder="Search categories...."
+                className="w-full border-none bg-[transparent] outline-none"
+                value={searchedCategory}
+                onChange={(e) => setSearchedCategory(e.target.value)}
+              />
+            </div>
 
-        <div className="flex gap-6 items-center w-full flex-wrap">
-          {categories?.map((category, index) => (
-            <CategoryCard category={category} key={index} />
-          ))}
-        </div>
+            <div className="flex gap-10 items-center w-full flex-wrap">
+              {categories?.filter((a) =>
+                a.name
+                  .toLowerCase()
+                  .includes(searchedCategory.toLocaleLowerCase())
+              ).length === 0 && <p>No categories found</p>}
+              <>
+                {categories
+                  ?.filter((a) =>
+                    a.name
+                      .toLowerCase()
+                      .includes(searchedCategory.toLocaleLowerCase())
+                  )
+                  .map((category, index) => (
+                    <CategoryCard category={category} key={index} />
+                  ))}
+              </>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

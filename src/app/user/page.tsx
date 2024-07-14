@@ -7,18 +7,16 @@ import Image from "next/image";
 import searchIcon from "../../../public/images/search.svg";
 import UserDocuentsSection from "../components/UserDocuentsSection";
 
-const inter = Inter({ subsets: ["latin"], weight: "800" });
-const interLight = Inter({ subsets: ["latin"], weight: "500" });
-
 const UserPage = () => {
+  console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
   return (
     <>
       <div className="px-4 lg:px-20  flex flex-col gap-4">
         <div className="w-full lg:w-max flex flex-col gap-4">
-          <h1 className={`text-[#344054] text-[2rem] ${inter.className}`}>
+          <h1 className={`text-[#344054] text-[2rem] `}>
             Your Saved Documents
           </h1>
-          <p className={`text-[#667085] text-[1rem] ${interLight.className}`}>
+          <p className={`text-[#667085] text-[1rem] `}>
             Search from your saved documents.
           </p>
         </div>

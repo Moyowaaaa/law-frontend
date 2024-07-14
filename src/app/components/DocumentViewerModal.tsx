@@ -50,9 +50,7 @@ const DocumentViewerModal = ({
             {sentenceCase(document.fileName)}
           </h1>
 
-          <p className={`${interLight.className} text-[#101828]`}>
-            {document.category}
-          </p>
+          <p className={` text-[#101828]`}>{document.category}</p>
           <DocViewer
             documents={documents}
             pluginRenderers={DocViewerRenderers}

@@ -11,6 +11,7 @@ import {
 import { db } from "@/firebase/firebaseConfig";
 import { AuthContext } from "@/context/AuthContext";
 import toast from "react-hot-toast";
+import Loader from "./Loader";
 
 export type document = {
   createdAt: {
@@ -32,9 +33,12 @@ const DocumentsSection = () => {
   const [documents, setDocuments] = useState<document[]>([]);
   const [bookMarkedDocuments, setBookMarkedDocuments] = useState<string[]>([]);
   const { currentUser } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (currentUser) {
+      setIsLoading(true);
+
       const fetchUserBookmarks = async () => {
         try {
           const userDocRef = doc(db, "users", currentUser.uid);
@@ -57,6 +61,7 @@ const DocumentsSection = () => {
         id: doc.id,
       })) as document[];
       setDocuments(docs);
+      setIsLoading(false);
     });
 
     return () => unsubscribe();
@@ -93,22 +98,28 @@ const DocumentsSection = () => {
   };
 
   return (
-    <div className="w-full py-4">
-      {documents.length === 0 ? (
-        <p>No documents yet.</p>
+    <>
+      {isLoading ? (
+        <Loader />
       ) : (
-        <div className="flex flex-col gap-2">
-          {documents.map((document) => (
-            <DocumentCard
-              key={document.id}
-              document={document}
-              isBookmarked={bookMarkedDocuments.includes(document.id)}
-              onToggleBookmark={onToggleBookmark}
-            />
-          ))}
+        <div className="w-full py-4">
+          {documents.length === 0 ? (
+            <p>No documents yet.</p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {documents.map((document) => (
+                <DocumentCard
+                  key={document.id}
+                  document={document}
+                  isBookmarked={bookMarkedDocuments.includes(document.id)}
+                  onToggleBookmark={onToggleBookmark}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

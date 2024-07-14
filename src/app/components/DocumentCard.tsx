@@ -29,9 +29,6 @@ import { db } from "@/firebase/firebaseConfig";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 
-const interSemi = Inter({ subsets: ["latin"], weight: "500" });
-const interLight = Inter({ subsets: ["latin"], weight: "400" });
-
 export function formatDate(timestamp: any): string {
   const date = new Date(timestamp);
 
@@ -143,13 +140,8 @@ const DocumentCard = ({
       )}
       <div className="w-full py-4 flex flex-col border-[#EAECF0] text-[#667085] border-b-2 text-[0.875rem] cursor-pointer">
         <div className="flex items-end justify-between w-full">
-          <div
-            className={`flex flex-col gap-2 ${interLight.className}`}
-            onClick={openPreview}
-          >
-            <p className={`${interSemi.className} text-[#101828]`}>
-              {document.fileName}
-            </p>
+          <div className={`flex flex-col gap-2 `} onClick={openPreview}>
+            <p className={` text-[#101828]`}>{document.fileName}</p>
             <p>{document.category}</p>
 
             <div className="mt-6">
