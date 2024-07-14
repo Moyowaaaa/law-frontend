@@ -1,4 +1,4 @@
 export interface category {
-  title: string;
-  documentCount: number;
+  name: string;
+  documentsCount: number;
 }
