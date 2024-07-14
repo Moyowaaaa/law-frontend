@@ -8,7 +8,6 @@ import searchIcon from "../../../public/images/search.svg";
 import UserDocuentsSection from "../components/UserDocuentsSection";
 
 const UserPage = () => {
-  console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
   return (
     <>
       <div className="px-4 lg:px-20  flex flex-col gap-4">
