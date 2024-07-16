@@ -78,6 +78,10 @@ const UploadModal = ({
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const uploadDocument = (file: File) => {
+    if (file.type !== "application/pdf") {
+      toast.error("Only PDF files are allowed", { duration: 5000 });
+      return;
+    }
     setFileToBeUploaded(file);
   };
 
@@ -252,7 +256,7 @@ const UploadModal = ({
           {!fileToBeUploaded ? (
             <div className="flex flex-col gap-2 items-center">
               <p>Click to upload or drag and drop a document</p>
-              <small>(Pdf.)</small>
+              <small>(PDF only)</small>
             </div>
           ) : (
             <div className="flex">{fileToBeUploaded?.name}</div>
