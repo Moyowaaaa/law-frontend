@@ -34,10 +34,12 @@ const Navbar = () => {
       setIsLoading(true);
       await signOut(auth);
 
-      localStorage.clear();
+      window.localStorage.clear();
       window.location.replace("/");
+      window.localStorage.setItem("logged out", "true");
       setTimeout(() => {
         toast.success(`User logged out`);
+        window.localStorage.removeItem("logged out");
       }, 2000);
       setIsLoading(false);
     } catch (error) {

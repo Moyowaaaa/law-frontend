@@ -7,6 +7,7 @@ import {
   onSnapshot,
   orderBy,
   serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 import React, { SetStateAction, useEffect, useMemo, useState } from "react";
 import { category } from "../types/types";
@@ -52,6 +53,9 @@ const SelectCategory = ({
           name: category,
           createdAt: serverTimestamp(),
         });
+
+        await updateDoc(newCategoryDocRef, { id: newCategoryDocRef.id });
+
         setCategory(category);
         setNewCategory(category);
       } else {

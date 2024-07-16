@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth, db } from "@/firebase/firebaseConfig";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import toast from "react-hot-toast";
 import Loader from "./components/Loader";
@@ -19,6 +19,18 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   console.log({ currentUser });
+
+  useEffect(() => {
+    const loggedOut = window.localStorage.getItem("logged out");
+
+    if (loggedOut) {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    }
+  }, []);
+
   const onSignInUser = async () => {
     setIsLoading(true);
     try {
