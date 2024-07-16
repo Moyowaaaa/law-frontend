@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { SetStateAction, useState } from "react";
 import bookmarkIcon from "../../../public/images/bookmark.svg";
 import bookmarkedIcon from "../../../public/images/bookmarked.svg";
 import downloadIcon from "../../../public/images/download.svg";
@@ -14,7 +14,7 @@ import {
   isThisWeek,
   isThisMonth,
 } from "date-fns";
-import { convertFirestoreTimestampToDate } from "../../../utils";
+import { convertFirestoreTimestampToDate, sentenceCase } from "../../../utils";
 import { deleteObject, getStorage, ref } from "firebase/storage";
 import {
   doc,
@@ -51,10 +51,12 @@ const DocumentCard = ({
   document,
   isBookmarked,
   onToggleBookmark,
+  setIsLoading,
 }: {
   document: document;
   isBookmarked: boolean;
   onToggleBookmark: (documentId: string) => void;
+  setIsLoading: React.Dispatch<SetStateAction<boolean>>;
 }) => {
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const pathname = usePathname();
@@ -94,9 +96,10 @@ const DocumentCard = ({
 
   const onDeleteDocument = async () => {
     try {
+      setIsLoading(true);
       const storage = getStorage();
       const fileRef = ref(storage, `documents/${document.documentName}`);
-      const documentRef = doc(db, "documents", document.id);
+      const documentRef = doc(db, "documents", document.documentId);
 
       const categoriesCollectionRef = collection(db, "categories");
 
@@ -104,21 +107,32 @@ const DocumentCard = ({
         categoriesCollectionRef,
         where("name", "==", document.category)
       );
-      toast.success(`Successfully deleted document`);
       console.log("deleted");
       const querySnapshot = await getDocs(q);
       const categoryDoc = querySnapshot.docs[0];
-      const categoryDocRef = doc(db, "categories", categoryDoc.id);
-      const currentCount = categoryDoc.data().documentsCount || 0;
-      await updateDoc(categoryDocRef, {
-        documentsCount: currentCount - 1,
-      });
+      if (categoryDoc?.id) {
+        const categoryDocRef = doc(db, "categories", categoryDoc?.id);
+        const currentCount = categoryDoc.data().documentsCount || 0;
+        if (currentCount === 0) {
+          await updateDoc(categoryDocRef, {
+            documentsCount: 0,
+          });
+        } else {
+          await updateDoc(categoryDocRef, {
+            documentsCount: currentCount - 1,
+          });
+        }
+      }
 
       await deleteObject(fileRef);
       await deleteDoc(documentRef);
+      toast.success(`Successfully deleted document`);
+
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
       toast.error(`An error occurred, please try again.`);
+      setIsLoading(false);
     }
   };
 
@@ -141,7 +155,9 @@ const DocumentCard = ({
       <div className="w-full py-4 flex flex-col border-[#EAECF0] text-[#667085] border-b-2 text-[0.875rem] cursor-pointer">
         <div className="flex items-end justify-between w-full">
           <div className={`flex flex-col gap-2 `} onClick={openPreview}>
-            <p className={` text-[#101828]`}>{document.fileName}</p>
+            <p className={` text-[#101828]`}>
+              {sentenceCase(document.fileName)}
+            </p>
             <p>{document.category}</p>
 
             <div className="mt-6">

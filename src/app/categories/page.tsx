@@ -9,16 +9,6 @@ import { db } from "@/firebase/firebaseConfig";
 import SelectCategory from "../components/SelectCategory";
 import Loader from "../components/Loader";
 
-// export const categories: category[] = [
-//   { title: "Charge and bail", documentCount: 90 },
-//   { title: "Civil Litigation", documentCount: 90 },
-//   { title: "Agreement", documentCount: 90 },
-//   { title: "Land Use", documentCount: 90 },
-//   { title: "Charge and bail", documentCount: 90 },
-//   { title: "Charge and bail", documentCount: 90 },
-//   { title: "Charge and bail", documentCount: 90 },
-// ];
-
 const Page = () => {
   const [categories, setCategories] = useState<category[]>([]);
   const [searchedCategory, setSearchedCategory] = useState<string>("");
@@ -46,7 +36,9 @@ const Page = () => {
         </p>
 
         {isLoading ? (
-          <Loader />
+          <div className="w-full h-[30rem] flex flex-col justify-center items-center">
+            <Loader />
+          </div>
         ) : (
           <>
             <div className=" flex w-[25rem] border-2 border-[#EAECF0] items-center rounded-lg gap-4 pl-4 py-2 bg-[transparent]">

@@ -22,6 +22,46 @@ import uploadIcon from "../../../public/images/uploadIcon.png";
 import Image from "next/image";
 import SelectCategory from "./SelectCategory";
 
+export const statesInNigeria = [
+  "Abia",
+  "Adamawa",
+  "Akwa Ibom",
+  "Anambra",
+  "Bauchi",
+  "Bayelsa",
+  "Benue",
+  "Borno",
+  "Cross River",
+  "Delta",
+  "Ebonyi",
+  "Edo",
+  "Ekiti",
+  "Enugu",
+  "Gombe",
+  "Imo",
+  "Jigawa",
+  "Kaduna",
+  "Kano",
+  "Katsina",
+  "Kebbi",
+  "Kogi",
+  "Kwara",
+  "Lagos",
+  "Nasarawa",
+  "Niger",
+  "Ogun",
+  "Ondo",
+  "Osun",
+  "Oyo",
+  "Plateau",
+  "Rivers",
+  "Sokoto",
+  "Taraba",
+  "Yobe",
+  "Zamfara",
+  "Federal Capital Territory (FCT)",
+];
+
 const UploadModal = ({
   openUploadModal,
   setOpenUploadModal,
@@ -32,10 +72,16 @@ const UploadModal = ({
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [fileToBeUploaded, setFileToBeUploaded] = useState<File | null>(null);
   const [title, setTitle] = useState<string>("");
+  const [state, setState] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [fileUploadProgress, setFileUploadProgress] = useState<number>(0);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const uploadDocument = (file: File) => {
+    if (file.type !== "application/pdf") {
+      toast.error("Only PDF files are allowed", { duration: 5000 });
+      return;
+    }
     setFileToBeUploaded(file);
   };
 
@@ -50,6 +96,7 @@ const UploadModal = ({
 
   const finishUpload = async () => {
     try {
+      setIsUploading(true);
       if (!fileToBeUploaded || !title || !category) {
         console.error("File or document details are missing");
         toast.error("Please check document details and try again", {
@@ -81,9 +128,7 @@ const UploadModal = ({
         },
         (error) => {
           console.error("Upload failed", error);
-          toast.error("An error occurred while uploading", {
-            duration: 5000,
-          });
+          toast.error("An error occurred while uploading", { duration: 5000 });
         },
         async () => {
           try {
@@ -95,8 +140,10 @@ const UploadModal = ({
               downloadURL: downloadURL,
               downloadCount: 0,
               createdAt: serverTimestamp(),
+              state,
             });
 
+            // Updating category document count
             const categoriesCollectionRef = collection(db, "categories");
             const q = query(
               categoriesCollectionRef,
@@ -121,19 +168,20 @@ const UploadModal = ({
 
             await updateDoc(docRef, { documentId: docRef.id });
             console.log("File info added to Firestore with ID:", docRef.id);
-            toast.success("Document uploaded successfully", {
-              duration: 5000,
-            });
+            toast.success("Document uploaded successfully", { duration: 5000 });
             setFileUploadProgress(0);
+
             setFileToBeUploaded(null);
             setTitle("");
             setCategory("");
+            setIsUploading(false);
             setOpenUploadModal(false);
           } catch (error) {
             console.error("Error adding file info to Firestore", error);
             toast.error("An error occurred, please try again", {
               duration: 5000,
             });
+            setIsUploading(false);
           }
         }
       );
@@ -208,7 +256,7 @@ const UploadModal = ({
           {!fileToBeUploaded ? (
             <div className="flex flex-col gap-2 items-center">
               <p>Click to upload or drag and drop a document</p>
-              <small>(Pdf.)</small>
+              <small>(PDF only)</small>
             </div>
           ) : (
             <div className="flex">{fileToBeUploaded?.name}</div>
@@ -231,11 +279,33 @@ const UploadModal = ({
 
           <SelectCategory setCategory={setCategory} />
 
+          <div className="flex flex-col gap-2">
+            <p>State</p>
+            <select
+              onChange={(e) => setState(e.target.value)}
+              className=" flex w-full border-2 border-[#EAECF0] items-center rounded-lg gap-4 pl-4 py-2 bg-[transparent]"
+            >
+              {statesInNigeria?.map((state, index) => (
+                <option key={index} value={state}>
+                  {state}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <button
             onClick={finishUpload}
-            className="px-4 py-2 bg-[#333333] rounded-lg text-[#ffffff] min-w-ma"
+            disabled={isUploading}
+            className={`px-4 py-2 bg-[#333333] rounded-lg text-[#ffffff] min-w-max flex items-center justify-center max-h-[3rem] ${
+              isUploading ? "cursor-not-allowed" : "cursor-pointer"
+            }`}
           >
+            {isUploading
+              ? `Uploading`
+              : `
             Upload
+
+`}
           </button>
         </div>
       </div>

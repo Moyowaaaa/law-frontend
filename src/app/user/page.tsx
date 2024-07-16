@@ -20,17 +20,7 @@ const UserPage = () => {
           </p>
         </div>
 
-        <div className="w-8/12 ">
-          <div className="mt-8 flex w-8/12 border-2 border-[#EAECF0] items-center rounded-lg gap-4 lg:pl-4 py-2 bg-[transparent]">
-            <div className="min-w-max">
-              <Image src={searchIcon} alt="" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search for draft"
-              className="w-full border-none bg-[transparent] outline-none"
-            />
-          </div>
+        <div className="w-8/12 flex flex-col gap-10">
           <UserDocuentsSection />
         </div>
       </div>

@@ -10,29 +10,35 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
+import Loader from "./Loader";
+import toast from "react-hot-toast";
+import searchIcon from "../../../public/images/search.svg";
+import Image from "next/image";
 
 const UserDocumentsSection = () => {
   const [documents, setDocuments] = useState<document[]>([]);
   const [bookMarkedDocuments, setBookMarkedDocuments] = useState<string[]>([]);
   const { currentUser } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Fetch user bookmarks
   const fetchUserBookmarks = async () => {
     if (!currentUser) return;
 
     try {
+      setIsLoading(true);
       const userDocRef = doc(db, "users", currentUser.uid);
       const userDocSnap = await getDoc(userDocRef);
       if (userDocSnap.exists()) {
         const userData = userDocSnap.data();
         setBookMarkedDocuments(userData.savedDocuments || []);
       }
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
 
-  // Fetch documents from Firestore
   useEffect(() => {
     fetchUserBookmarks();
 
@@ -48,7 +54,6 @@ const UserDocumentsSection = () => {
     return () => unsubscribe();
   }, [currentUser]);
 
-  // Filter documents to show only bookmarked ones
   const filteredDocuments = documents.filter((doc) =>
     bookMarkedDocuments.includes(doc.id)
   );
@@ -57,6 +62,8 @@ const UserDocumentsSection = () => {
     if (!currentUser) return;
 
     try {
+      setIsLoading(true);
+
       const userDocRef = doc(db, "users", currentUser.uid);
       const userDocSnap = await getDoc(userDocRef);
 
@@ -65,43 +72,62 @@ const UserDocumentsSection = () => {
         let updatedSavedDocuments: string[];
 
         if (userData.savedDocuments.includes(documentId)) {
-          // Unbookmark if already bookmarked
           updatedSavedDocuments = userData.savedDocuments.filter(
             (id: any) => id !== documentId
           );
+          toast.success(`Unsaved`);
         } else {
-          // Bookmark if not already bookmarked
           updatedSavedDocuments = [...userData.savedDocuments, documentId];
+          toast.success(`Saved`);
         }
 
-        // Update Firestore with the new savedDocuments array
         await updateDoc(userDocRef, { savedDocuments: updatedSavedDocuments });
 
-        // Update local state
         setBookMarkedDocuments(updatedSavedDocuments);
+        setIsLoading(false);
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full py-4">
-      {filteredDocuments.length === 0 ? (
-        <p>No bookmarked documents yet.</p>
+    <>
+      <div className="mt-8 flex w-8/12 border-2 border-[#EAECF0] items-center rounded-lg gap-4 lg:pl-4 py-2 bg-[transparent]">
+        <div className="min-w-max">
+          <Image src={searchIcon} alt="" />
+        </div>
+        <input
+          type="text"
+          placeholder="Search for draft"
+          className="w-full border-none bg-[transparent] outline-none"
+        />
+      </div>
+      {isLoading ? (
+        <div className="w-full flex items-center h-[30rem]">
+          <Loader />
+        </div>
       ) : (
-        <div className="flex flex-col gap-2">
-          {filteredDocuments.map((document) => (
-            <DocumentCard
-              key={document.id}
-              document={document}
-              isBookmarked={true}
-              onToggleBookmark={onToggleBookmark}
-            />
-          ))}
+        <div className="w-full py-4 ">
+          {filteredDocuments.length === 0 ? (
+            <p>No bookmarked documents yet.</p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {filteredDocuments.map((document) => (
+                <DocumentCard
+                  setIsLoading={setIsLoading}
+                  key={document.id}
+                  document={document}
+                  isBookmarked={true}
+                  onToggleBookmark={onToggleBookmark}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
-    </div>
+    </>
   );
 };
 
